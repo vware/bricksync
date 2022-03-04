@@ -221,7 +221,10 @@ int bsCheckBrickLink( bsContext *context )
     else if( orderlist.topdate < context->bricklink.ordertopdate )
     {
       blFreeOrderList( &orderlist );
-      ioPrintf( &context->output, 0, BSMSG_INFO "We are up-to-date on BrickLink orders.\n" );
+      if (context->daemonmode == 0)
+      {
+        ioPrintf( &context->output, 0, BSMSG_INFO "We are up-to-date on BrickLink orders.\n" );
+      }
       return 1;
     }
 
@@ -250,7 +253,10 @@ int bsCheckBrickLink( bsContext *context )
     if( orderlist.topdate < context->bricklink.ordertopdate )
     {
       blFreeOrderList( &orderlist );
-      ioPrintf( &context->output, 0, BSMSG_INFO "We are up-to-date on BrickLink orders.\n" );
+      if (context->daemonmode == 0)
+      {
+        ioPrintf( &context->output, 0, BSMSG_INFO "We are up-to-date on BrickLink orders.\n" );
+      }
       return 1;
     }
 
@@ -406,7 +412,10 @@ int bsCheckBrickOwl( bsContext *context )
     if( orderlist.topdate < context->brickowl.ordertopdate )
     {
       boFreeOrderList( &orderlist );
-      ioPrintf( &context->output, 0, BSMSG_INFO "We are up-to-date on BrickOwl orders.\n" );
+      if (context->daemonmode == 0)
+      {
+        ioPrintf( &context->output, 0, BSMSG_INFO "We are up-to-date on BrickOwl orders.\n" );
+      }
       return 1;
     }
 

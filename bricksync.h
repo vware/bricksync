@@ -404,6 +404,8 @@ typedef struct
   char *storename;
   char *storecurrency;
 
+  int daemonmode;
+
 } bsContext;
 
 /* Is automatic mode enabled? */

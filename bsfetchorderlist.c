@@ -121,7 +121,10 @@ int bsQueryBickLinkOrderList( bsContext *context, bsOrderList *orderlist, int64_
   DEBUG_SET_TRACKER();
 
   bsTrackerInit( &tracker, context->bricklink.http );
-  ioPrintf( &context->output, IO_MODEBIT_FLUSH, BSMSG_INFO "Fetching the BrickLink Order List...\n" );
+  if (context->daemonmode == 0)
+  {
+    ioPrintf( &context->output, IO_MODEBIT_FLUSH, BSMSG_INFO "Fetching the BrickLink Order List...\n" );
+  }
   for( ; ; )
   {
     /* Add an OrderList query */
@@ -253,7 +256,10 @@ int bsQueryBickOwlOrderList( bsContext *context, bsOrderList *orderlist, int64_t
   DEBUG_SET_TRACKER();
 
   bsTrackerInit( &tracker, context->brickowl.http );
-  ioPrintf( &context->output, IO_MODEBIT_FLUSH, BSMSG_INFO "Fetching the BrickOwl Order List...\n" );
+  if (context->daemonmode == 0)
+  {
+    ioPrintf( &context->output, IO_MODEBIT_FLUSH, BSMSG_INFO "Fetching the BrickOwl Order List...\n" );
+  }
   for( ; ; )
   {
     /* Add an OrderList query */

@@ -921,7 +921,10 @@ void bsDiskFreeSpaceCheck( bsContext *context )
   freediskspace = ccGetFreeDiskSpace( BS_BACKUP_DIR );
   if( freediskspace >= 0 )
   {
-    ioPrintf( &context->output, IO_MODEBIT_LOGONLY, "LOG: Free disk space check returned " CC_LLD " bytes.\n", (long long)freediskspace );
+    if (context->daemonmode == 0)
+    {
+      ioPrintf( &context->output, IO_MODEBIT_LOGONLY, "LOG: Free disk space check returned " CC_LLD " bytes.\n", (long long)freediskspace );
+    }
     if( freediskspace < BS_DISK_SPACE_CRITICAL )
     {
       char *pruneargv[] = { "prunebackups", "15" };
@@ -1040,10 +1043,6 @@ int main( int argc, char **argv )
   debugTrackerInit( BS_DEBUG_TRACKER_WATCH_MILLISECONDS, BS_DEBUG_TRACKER_STALL_MILLISECONDS );
 #endif
 
-  /* Initiate threaded stdin */
-  /* The only way to read from the keyboard with buffering without blocking on Windows. Blarggghhh */
-  ioStdinInit();
-
   DEBUG_SET_TRACKER();
 
   /* Ahrem, let's introduce ourselves. Hi, I'm BrickSync! */
@@ -1128,6 +1127,27 @@ int main( int argc, char **argv )
   }
 
   DEBUG_SET_TRACKER();
+  
+  /* Check for Daemon mode, subsequently disable inputs */
+  context->daemonmode = 0;
+  if (argc > 1) {
+    for (int i = 1; i < argc; i++)
+    {
+      if(strcmp(argv[i], "--daemon") == 0)
+      {
+        printf( "Starting in daemon mode\n" );
+        context->daemonmode = 1;
+        break;
+      }
+    }
+  }
+
+  /* Initiate threaded stdin */
+  /* The only way to read from the keyboard with buffering without blocking on Windows. Blarggghhh */
+  if (context->daemonmode == 0)
+  {
+    ioStdinInit();
+  }
 
 #if BS_ENABLE_ANTIDEBUG
   antidebuginit = bsAntiDebugInit - BS_ANTIDEBUG_INIT_OFFSET;
@@ -1325,7 +1345,10 @@ int main( int argc, char **argv )
   /* Good to go! */
   ioPrintf( &context->output, 0, "\n" );
   ioPrintf( &context->output, 0, BSMSG_INFO IO_GREEN "BrickSync state saved. All systems are operational, Captain!\n" );
-  ioPrintf( &context->output, 0, BSMSG_INFO "Type \"" IO_CYAN "help" IO_DEFAULT "\" for the list of commands.\n" );
+  if (context->daemonmode == 0)
+  {
+    ioPrintf( &context->output, 0, BSMSG_INFO "Type \"" IO_CYAN "help" IO_DEFAULT "\" for the list of commands.\n" );
+  }
   ioPrintf( &context->output, 0, "\n" );
 
   /* We enter the main loop, yaarrr! */
@@ -1642,13 +1665,16 @@ int main( int argc, char **argv )
     /* Detect new commands to know if we should sleep or not */
     actionflag = 0;
 
-    /* Check user input */
-    if( !( bsParseInput( context, &actionflag ) ) )
+    if (context->daemonmode == 0)
     {
+      /* Check user input */
+      if( !( bsParseInput( context, &actionflag ) ) )
+      {
 #if BS_ENABLE_ANTIDEBUG
-      statusflag = 1;
+        statusflag = 1;
 #endif
-      break;
+        break;
+      }
     }
 
 #if BS_ENABLE_ANTIDEBUG
