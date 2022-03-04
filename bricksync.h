@@ -52,7 +52,7 @@
 #define BS_BRICKOWL_API_SERVER "api.brickowl.com"
 #define BS_BRICKSYNC_WEB_SERVER "www.bricksync.net"
 
-#define BS_GLOBAL_PATH "data" CC_DIR_SEPARATOR_STRING
+#define BS_GLOBAL_PATH CC_DIR_SEPARATOR_STRING "data" CC_DIR_SEPARATOR_STRING
 
 /* BrickSync file paths */
 #define BS_INVENTORY_FILE BS_GLOBAL_PATH "bricksync.inventory.bsx"

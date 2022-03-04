@@ -31,7 +31,7 @@ brickowl.pollinterval = 600;
 
 // The path where to store the price guide cache
 // To share the cache, you can put the same directory as the one used by BrickStore/BrickStock
-priceguide.cachepath = "data/pgcache";
+priceguide.cachepath = "/data/pgcache";
 // The format to store the price guide cache, important to share with either BrickStore or BrickStock
 priceguide.cacheformat = "BrickStock";
 // For how many days is the price guide cache good for?
